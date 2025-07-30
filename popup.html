@@ -145,6 +145,7 @@
       .card-content {
         padding: 1.5rem;
         padding-top: 0;
+        overflow: hidden; /* Prevent overflow from content */
       }
       .card-description {
         font-size: 0.875rem;
@@ -159,6 +160,10 @@
         display: flex;
         gap: 0.5rem;
         margin-left: auto;
+      }
+      .bookmark-url {
+        word-break: break-all;
+        overflow-wrap: anywhere;
       }
       .bookmark-url a {
         color: hsl(var(--primary));
