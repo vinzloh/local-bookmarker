@@ -37,6 +37,18 @@ function parseBookmarkTitle(title) {
   return { visibleTitle: visibleTitle || title, description };
 }
 
+async function fetchMetaDescription(url) {
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, "text/html");
+    return doc.querySelector('meta[name="description"]')?.content || "";
+  } catch {
+    return "";
+  }
+}
+
 function loadBookmarks(callback) {
   chrome.bookmarks.getTree((tree) => {
     let bookmarks = [];
@@ -97,26 +109,32 @@ function displayBookmarks(bookmarks, filter = "") {
   });
 
   document.querySelectorAll(".edit-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", async (e) => {
       const id = e.target.dataset.id;
-      chrome.bookmarks.get(id, ([bm]) => {
-        const { visibleTitle, description } = parseBookmarkTitle(bm.title);
-        const newVisible = prompt("Edit Visible Title", visibleTitle);
-        const newUrl = prompt("Edit URL", bm.url);
-        const newDesc = prompt("Edit Description", description);
-        if (newVisible && newUrl) {
-          const hidden = encodeToZeroWidth(newDesc);
-          const newTitle = newVisible + hidden;
-          chrome.bookmarks.update(id, { title: newTitle, url: newUrl }, () =>
-            loadBookmarks((bms) =>
-              displayBookmarks(
-                bms,
-                document.getElementById("search").value.toLowerCase(),
-              ),
-            ),
-          );
-        }
-      });
+      const bmArray = await new Promise((resolve) =>
+        chrome.bookmarks.get(id, resolve),
+      );
+      const bm = bmArray[0];
+      const { visibleTitle, description } = parseBookmarkTitle(bm.title);
+      const newVisible = prompt("Edit Visible Title", visibleTitle);
+      if (newVisible === null || !newVisible) return;
+      const newUrl = prompt("Edit URL", bm.url);
+      if (newUrl === null || !newUrl) return;
+      let newDesc = prompt("Edit Description", description);
+      if (newDesc === null) return;
+      if (newDesc === "") {
+        newDesc = await fetchMetaDescription(newUrl);
+      }
+      const hidden = encodeToZeroWidth(newDesc);
+      const newTitle = newVisible + hidden;
+      chrome.bookmarks.update(id, { title: newTitle, url: newUrl }, () =>
+        loadBookmarks((bms) =>
+          displayBookmarks(
+            bms,
+            document.getElementById("search").value.toLowerCase(),
+          ),
+        ),
+      );
     });
   });
 }
@@ -135,21 +153,25 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const addBtn = document.getElementById("add-btn");
-  addBtn.addEventListener("click", () => {
+  addBtn.addEventListener("click", async () => {
     const visibleTitle = prompt("Visible Title (required)");
+    if (visibleTitle === null || !visibleTitle) return;
     const url = prompt("URL (required)");
-    const desc = prompt("Description (optional, will be hidden)");
-    if (visibleTitle && url) {
-      const hidden = encodeToZeroWidth(desc);
-      const title = visibleTitle + hidden;
-      chrome.bookmarks.create({ title, url }, () =>
-        loadBookmarks((bms) =>
-          displayBookmarks(
-            bms,
-            document.getElementById("search").value.toLowerCase(),
-          ),
-        ),
-      );
+    if (url === null || !url) return;
+    let desc = prompt("Description (optional, will be hidden)");
+    if (desc === null) return;
+    if (desc === "") {
+      desc = await fetchMetaDescription(url);
     }
+    const hidden = encodeToZeroWidth(desc);
+    const title = visibleTitle + hidden;
+    chrome.bookmarks.create({ title, url }, () =>
+      loadBookmarks((bms) =>
+        displayBookmarks(
+          bms,
+          document.getElementById("search").value.toLowerCase(),
+        ),
+      ),
+    );
   });
 });
