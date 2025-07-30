@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Local Bookmark Manager</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        width: 400px;
+        padding: 10px;
+      }
+      #search {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+      #import-btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      #add-form {
+        margin-bottom: 10px;
+      }
+      #add-form input {
+        width: 100%;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+      }
+      #add-form button {
+        width: 100%;
+      }
+      #bookmarks-list {
+        list-style: none;
+        padding: 0;
+      }
+      .bookmark-item {
+        border-bottom: 1px solid #ddd;
+        padding: 5px 0;
+      }
+      .bookmark-title {
+        font-weight: bold;
+      }
+      .bookmark-url {
+        color: blue;
+        display: block;
+      }
+      .bookmark-desc {
+        color: gray;
+        display: block;
+      }
+      .actions {
+        float: right;
+      }
+      .actions button {
+        margin-left: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="search" placeholder="Search bookmarks..." />
+    <button id="import-btn">Import from Browser Bookmarks</button>
+    <div id="add-form">
+      <input type="text" id="add-title" placeholder="Title (required)" />
+      <input type="text" id="add-url" placeholder="URL (required)" />
+      <input
+        type="text"
+        id="add-desc"
+        placeholder="Description (optional, auto-fetches if blank)"
+      />
+      <button id="add-btn">Add Bookmark</button>
+    </div>
+    <ul id="bookmarks-list"></ul>
+    <script src="popup.js"></script>
+  </body>
+</html>

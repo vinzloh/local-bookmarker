@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Local Bookmark Manager",
+  "version": "1.0",
+  "description": "A local bookmark manager with search, similar to xBrowserSync without sync.",
+  "permissions": ["storage", "bookmarks"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
