@@ -4,51 +4,179 @@
     <meta charset="UTF-8" />
     <title>Local Bookmark Manager</title>
     <style>
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+        --radius: 0.5rem;
+      }
       body {
-        font-family: Arial, sans-serif;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          "Noto Sans",
+          sans-serif,
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "Noto Color Emoji";
         width: 400px;
-        padding: 10px;
+        padding: 1rem;
+        margin: 0;
       }
-      #search {
+      .input {
+        display: flex;
+        height: 2.5rem;
         width: 100%;
-        padding: 5px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
+        border-radius: var(--radius);
+        border-width: 1px;
+        border-style: solid;
+        border-color: hsl(var(--input));
+        background-color: hsl(var(--background));
+        padding: 0 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        ring-offset-color: hsl(var(--background));
       }
-      #add-btn {
+      .input::placeholder {
+        color: hsl(var(--muted-foreground));
+      }
+      .input:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px hsl(var(--ring));
+        ring-offset: 2px;
+      }
+      .input:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: colors 0.15s ease-in-out;
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        height: 2.5rem;
+        padding: 0 1rem;
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0.75rem;
+      }
+      .button:hover {
+        background-color: hsla(var(--primary), 0.9);
+      }
+      .button:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px hsl(var(--ring));
+      }
+      .button:disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+      .button-small {
+        height: 2rem;
+        padding: 0 0.5rem;
+        font-size: 0.75rem;
+      }
+      .button-outline {
+        background-color: transparent;
+        border-width: 1px;
+        border-style: solid;
+        border-color: hsl(var(--border));
+        color: hsl(var(--foreground));
+      }
+      .button-outline:hover {
+        background-color: hsl(var(--accent));
+        color: hsl(var(--accent-foreground));
+      }
+      .card {
+        border-radius: calc(var(--radius) + 0.25rem);
+        border-width: 1px;
+        border-style: solid;
+        border-color: hsl(var(--border));
+        background-color: hsl(var(--card));
+        color: hsl(var(--card-foreground));
+        box-shadow:
+          0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0.5rem;
+      }
+      .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+        padding: 1.5rem;
+        padding-bottom: 0;
+      }
+      .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.5rem;
+      }
+      .card-content {
+        padding: 1.5rem;
+        padding-top: 0;
+      }
+      .card-description {
+        font-size: 0.875rem;
+        color: hsl(var(--muted-foreground));
       }
       #bookmarks-list {
         list-style: none;
         padding: 0;
-      }
-      .bookmark-item {
-        border-bottom: 1px solid #ddd;
-        padding: 5px 0;
-      }
-      .bookmark-title {
-        font-weight: bold;
-      }
-      .bookmark-url {
-        color: blue;
-        display: block;
-      }
-      .bookmark-desc {
-        color: gray;
-        display: block;
+        margin: 0;
       }
       .actions {
-        float: right;
+        display: flex;
+        gap: 0.5rem;
+        margin-left: auto;
       }
-      .actions button {
-        margin-left: 5px;
+      .bookmark-url a {
+        color: hsl(var(--primary));
+        text-decoration: none;
+      }
+      .bookmark-url a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
-    <input type="text" id="search" placeholder="Search bookmarks..." />
-    <button id="add-btn">Add Bookmark</button>
+    <input
+      type="text"
+      id="search"
+      class="input"
+      placeholder="Search bookmarks..."
+    />
+    <button id="add-btn" class="button">Add Bookmark</button>
     <ul id="bookmarks-list"></ul>
     <script src="popup.js"></script>
   </body>

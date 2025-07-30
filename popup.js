@@ -80,15 +80,22 @@ function displayBookmarks(bookmarks, filter = "") {
   );
   filtered.forEach((bm) => {
     const li = document.createElement("li");
-    li.className = "bookmark-item";
     li.innerHTML = `
-      <span class="bookmark-title">${bm.visibleTitle}</span>
-      <span class="actions">
-        <button class="edit-btn" data-id="${bm.id}">Edit</button>
-        <button class="delete-btn" data-id="${bm.id}">Delete</button>
-      </span>
-      <span class="bookmark-url"><a href="${bm.url}" target="_blank">${bm.url}</a></span>
-      <span class="bookmark-desc">${bm.description}</span>
+      <div class="card">
+        <div class="card-header">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="card-title">${bm.visibleTitle}</h3>
+            <div class="actions">
+              <button class="button button-outline button-small edit-btn" data-id="${bm.id}">Edit</button>
+              <button class="button button-outline button-small delete-btn" data-id="${bm.id}">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="bookmark-url"><a href="${bm.url}" target="_blank">${bm.url}</a></div>
+          <p class="card-description">${bm.description}</p>
+        </div>
+      </div>
     `;
     list.appendChild(li);
   });
