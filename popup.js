@@ -37,7 +37,7 @@ function parseBookmarkTitle(title) {
   return { visibleTitle: visibleTitle || title, description };
 }
 
-function loadBookmarks(filter) {
+function loadBookmarks(callback) {
   chrome.bookmarks.getTree((tree) => {
     let bookmarks = [];
     function flatten(node) {
@@ -53,7 +53,7 @@ function loadBookmarks(filter) {
       if (node.children) node.children.forEach(flatten);
     }
     tree.forEach(flatten);
-    displayBookmarks(bookmarks, filter);
+    callback(bookmarks);
   });
 }
 
@@ -85,7 +85,14 @@ function displayBookmarks(bookmarks, filter = "") {
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const id = e.target.dataset.id;
-      chrome.bookmarks.remove(id, () => loadBookmarks());
+      chrome.bookmarks.remove(id, () =>
+        loadBookmarks((bms) =>
+          displayBookmarks(
+            bms,
+            document.getElementById("search").value.toLowerCase(),
+          ),
+        ),
+      );
     });
   });
 
@@ -101,7 +108,12 @@ function displayBookmarks(bookmarks, filter = "") {
           const hidden = encodeToZeroWidth(newDesc);
           const newTitle = newVisible + hidden;
           chrome.bookmarks.update(id, { title: newTitle, url: newUrl }, () =>
-            loadBookmarks(),
+            loadBookmarks((bms) =>
+              displayBookmarks(
+                bms,
+                document.getElementById("search").value.toLowerCase(),
+              ),
+            ),
           );
         }
       });
@@ -110,12 +122,16 @@ function displayBookmarks(bookmarks, filter = "") {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadBookmarks();
-
   const search = document.getElementById("search");
+  loadBookmarks((bookmarks) => {
+    displayBookmarks(bookmarks);
+    search.focus(); // Focus on search input after loading
+  });
+
   search.addEventListener("input", (e) => {
-    loadBookmarks(e.target.value); // Reload and filter
-    // Note: displayBookmarks is called inside load, but to filter, we'd need to pass the current bookmarks; for simplicity, reload each time (fast for typical bookmark counts)
+    loadBookmarks((bookmarks) =>
+      displayBookmarks(bookmarks, e.target.value.toLowerCase()),
+    );
   });
 
   const addBtn = document.getElementById("add-btn");
@@ -126,7 +142,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (visibleTitle && url) {
       const hidden = encodeToZeroWidth(desc);
       const title = visibleTitle + hidden;
-      chrome.bookmarks.create({ title, url }, () => loadBookmarks());
+      chrome.bookmarks.create({ title, url }, () =>
+        loadBookmarks((bms) =>
+          displayBookmarks(
+            bms,
+            document.getElementById("search").value.toLowerCase(),
+          ),
+        ),
+      );
     }
   });
 });
