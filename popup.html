@@ -172,16 +172,30 @@
       .bookmark-url a:hover {
         text-decoration: underline;
       }
+      .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: hsl(var(--background));
+        padding: 1rem;
+        margin: 0 -1rem 0.75rem -1rem;
+        width: calc(100% + 2rem);
+      }
+      .sticky-header .button {
+        margin-bottom: 0;
+      }
     </style>
   </head>
   <body>
-    <input
-      type="text"
-      id="search"
-      class="input"
-      placeholder="Search bookmarks..."
-    />
-    <button id="add-btn" class="button">Add Bookmark</button>
+    <div class="sticky-header">
+      <input
+        type="text"
+        id="search"
+        class="input"
+        placeholder="Search bookmarks..."
+      />
+      <button id="add-btn" class="button">Add Bookmark</button>
+    </div>
     <ul id="bookmarks-list"></ul>
     <script src="popup.js"></script>
   </body>
