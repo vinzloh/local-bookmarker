@@ -15,20 +15,9 @@
         margin-bottom: 10px;
         box-sizing: border-box;
       }
-      #import-btn {
+      #add-btn {
         width: 100%;
         margin-bottom: 10px;
-      }
-      #add-form {
-        margin-bottom: 10px;
-      }
-      #add-form input {
-        width: 100%;
-        margin-bottom: 5px;
-        box-sizing: border-box;
-      }
-      #add-form button {
-        width: 100%;
       }
       #bookmarks-list {
         list-style: none;
@@ -59,17 +48,7 @@
   </head>
   <body>
     <input type="text" id="search" placeholder="Search bookmarks..." />
-    <button id="import-btn">Import from Browser Bookmarks</button>
-    <div id="add-form">
-      <input type="text" id="add-title" placeholder="Title (required)" />
-      <input type="text" id="add-url" placeholder="URL (required)" />
-      <input
-        type="text"
-        id="add-desc"
-        placeholder="Description (optional, auto-fetches if blank)"
-      />
-      <button id="add-btn">Add Bookmark</button>
-    </div>
+    <button id="add-btn">Add Bookmark</button>
     <ul id="bookmarks-list"></ul>
     <script src="popup.js"></script>
   </body>
