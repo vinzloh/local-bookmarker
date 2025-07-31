@@ -102,14 +102,16 @@ function displayBookmarks(bookmarks, filter = "") {
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const id = e.target.dataset.id;
-      chrome.bookmarks.remove(id, () =>
-        loadBookmarks((bms) =>
-          displayBookmarks(
-            bms,
-            document.getElementById("search").value.toLowerCase(),
+      if (confirm("Are you sure you want to delete this bookmark?")) {
+        chrome.bookmarks.remove(id, () =>
+          loadBookmarks((bms) =>
+            displayBookmarks(
+              bms,
+              document.getElementById("search").value.toLowerCase(),
+            ),
           ),
-        ),
-      );
+        );
+      }
     });
   });
 
