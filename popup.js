@@ -72,12 +72,18 @@ function loadBookmarks(callback) {
 function displayBookmarks(bookmarks, filter = "") {
   const list = document.getElementById("bookmarks-list");
   list.innerHTML = "";
-  const filtered = bookmarks.filter(
-    (bm) =>
-      bm.visibleTitle.toLowerCase().includes(filter) ||
-      bm.url.toLowerCase().includes(filter) ||
-      bm.description.toLowerCase().includes(filter),
-  );
+  let filtered = bookmarks;
+
+  if (filter) {
+    const miniSearch = new MiniSearch({
+      fields: ["visibleTitle", "url", "description"], // fields to index for full-text search
+      storeFields: ["visibleTitle", "url", "description"], // fields to return with search results
+    });
+
+    miniSearch.addAll(bookmarks);
+    filtered = miniSearch.search(filter, { prefix: true });
+  }
+
   filtered.forEach((bm) => {
     const li = document.createElement("li");
     li.className = "bookmark-item";
